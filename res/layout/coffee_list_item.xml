@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="@dimen/activity_horizontal_margin"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/coffee_list_item_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="left"
+        android:paddingBottom="@dimen/coffee_standard_buffer_padding"
+        android:textColor="@color/coffee_title_text_grey"/>
+
+    <TextView
+        android:id="@+id/coffee_list_item_description_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="left"
+        android:paddingBottom="@dimen/coffee_standard_buffer_padding"
+        android:textColor="@color/coffee_body_text_grey"/>
+
+    <ImageView
+        android:id="@+id/coffee_list_item_picture_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/coffee_standard_buffer_padding"
+        android:scaleType="fitCenter"/>
+
+
+</LinearLayout>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="coffee_title_text_grey" type="color">#ff605f5c</item>
+    <item name="coffee_body_text_grey" type="color">#ff9e9f9e</item>
+</resources>

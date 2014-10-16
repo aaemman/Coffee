@@ -11,9 +11,12 @@ public class CoffeeType {
 	private String mId;
 	private String mName;
 
+	/**
+	 * Default constructor for CoffeeType.class.
+	 * - This constructor is necessary (even if blank) in order for Jackson JSON Parsing to work properly.
+	 */
 	@JsonCreator
-	public CoffeeType() {
-	}
+	public CoffeeType() {	}
 
 	@JsonProperty("desc")
 	public String getDescription() {
