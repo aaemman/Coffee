@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.percolate.coffee" >
+<manifest
+    package="com.percolate.coffee"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission
+        android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".coffeeListActivity"
-            android:label="@string/app_name" >
+            android:name=".activity.CoffeeListActivity"
+            android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.JacksonSpringAndroidSpicedActivity"
+            android:label="@string/title_activity_jackson_spring_android_spiced">
+        </activity>
+
+        <!-- SERVICES -->
+        <service
+            android:name="com.octo.android.robospice.Jackson2SpringAndroidSpiceService"
+            android:exported="false"/>
+        r
     </application>
 
 </manifest>
