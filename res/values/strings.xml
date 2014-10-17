@@ -7,6 +7,10 @@
     <string name="percolate_coffee_base_url">https://coffeeapi.percolate.com/api/coffee/</string>
     <string name="title_activity_jackson_spring_android_spiced">JacksonSpringAndroidSpicedActivity</string>
     <string name="percolate_coffee_coffee_type_index_cache_key">CoffeeTypeIndexRequest</string>
+    <string name="percolate_coffee_coffee_type_show_cache_key">CoffeeTypeShowRequest</string>
+    <string name="percolate_coffee_get_image_from_url_cache_key">GetImageFromUrlRequest</string>
     <string name="percolate_coffee_api_key">WuVbkuUsCXHPx3hsQzus4SE</string>
+    <string name="title_activity_coffee_type_detailed_view_acitivity">CoffeeTypeDetailedViewAcitivity</string>
+    <string name="action_share">Share</string>
 
 </resources>

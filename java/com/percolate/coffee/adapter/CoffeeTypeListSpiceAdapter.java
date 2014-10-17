@@ -38,8 +38,7 @@ public class CoffeeTypeListSpiceAdapter extends OkHttpSpiceArrayAdapter<CoffeeTy
 
 	@Override
 	public IBitmapRequest createRequest(CoffeeType coffeeType, int imageIndex, int requestImageWidth, int requestImageHeight) {
-		File tempFile = new File(getContext().getCacheDir(), "THUMB_IMAGE_TEMP_" + coffeeType.getName());
-		Log.i("ALEX : URL --->", coffeeType.getImageUrl());
+		File tempFile = new File(getContext().getCacheDir(), "COFFEE_TYPE_IMAGE_CACHE_KEY" + coffeeType.getName());
 
 		if (coffeeType.getImageUrl() != null && !coffeeType.getImageUrl().trim().equals("")) {
 			return new OkHttpBitmapRequest(coffeeType.getImageUrl(), requestImageWidth,

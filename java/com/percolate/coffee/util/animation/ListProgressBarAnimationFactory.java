@@ -8,7 +8,7 @@ import android.view.animation.OvershootInterpolator;
 /**
  * Created by AlexanderEmmanuel on 2014-10-16.
  */
-public class ListProgressBarAnimationBuilder extends AnimationBuilder {
+public class ListProgressBarAnimationFactory extends AnimationFactory {
 
 	private ObjectAnimator moveAnim;
 
@@ -24,11 +24,11 @@ public class ListProgressBarAnimationBuilder extends AnimationBuilder {
 	private static final DecelerateInterpolator sDecelerateInterpolator = new DecelerateInterpolator(sDecelerateTension);
 
 
-	public ListProgressBarAnimationBuilder(View view) {
+	public ListProgressBarAnimationFactory(View view) {
 		super(view);
 	}
 
-	public AnimationBuilder shown(boolean shown) {
+	public AnimationFactory shown(boolean shown) {
 		mShown = shown;
 		return this;
 	}
@@ -43,7 +43,7 @@ public class ListProgressBarAnimationBuilder extends AnimationBuilder {
 				mShown ? PROGRESS_BAR_END_POSITION : PROGRESS_BAR_START_POSITION);
 
 		moveAnim.setInterpolator(mShown ? sDecelerateInterpolator : sOvershootInterpolator);
-		moveAnim.setDuration(this.mDuration);
+		moveAnim.setDuration(mDuration);
 		animSet.play(moveAnim);
 
 		super.animate();

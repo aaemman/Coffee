@@ -1,24 +1,31 @@
 package com.percolate.coffee.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.spicelist.okhttp.OkHttpBitmapSpiceManager;
 import com.percolate.coffee.R;
 import com.percolate.coffee.adapter.CoffeeTypeListSpiceAdapter;
-import com.percolate.coffee.util.animation.ListProgressBarAnimationBuilder;
+import com.percolate.coffee.util.animation.ListProgressBarAnimationFactory;
+import com.percolate.coffee.util.api.pojo.CoffeeType;
 import com.percolate.coffee.util.api.pojo.CoffeeTypeList;
 import com.percolate.coffee.util.api.request.CoffeeTypeIndexRequest;
 
 
-public class CoffeeListActivity extends JacksonSpringAndroidSpicedActivity {
+public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivity {
 	private String mLastRequestCacheKey;
 	private OkHttpBitmapSpiceManager spiceManagerBinary = new OkHttpBitmapSpiceManager();
 
@@ -26,13 +33,53 @@ public class CoffeeListActivity extends JacksonSpringAndroidSpicedActivity {
 	private ProgressBar    coffeeTypesProgressBar;
 	private ListView       coffeeTypesListView;
 
+	private ActionBar      mActionBar;
+	private LayoutInflater mInflater;
+	private View           mCustomActionBarView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		//		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_coffee_list);
+
+		initActionBar();
+
 		coffeeTypesListLayout = (RelativeLayout) findViewById(R.id.coffee_types_list_linear_layout);
 		coffeeTypesProgressBar = (ProgressBar) findViewById(R.id.coffee_types_list_progress_bar);
 		coffeeTypesListView = (ListView) findViewById(R.id.coffee_types_list_list_view);
+
+		coffeeTypesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+				CoffeeType clickedCoffeeType = (CoffeeType) adapterView.getItemAtPosition(i);
+				String id = clickedCoffeeType.getId();
+				String imageUrl = clickedCoffeeType.getImageUrl();
+
+				Intent showCoffeeTypeDetailedViewIntent = new Intent(CoffeeTypeListViewActivity.this, CoffeeTypeDetailedViewAcitivity.class);
+				showCoffeeTypeDetailedViewIntent.putExtra("id", id);
+
+				if (imageUrl != null) {
+					showCoffeeTypeDetailedViewIntent.putExtra("image_url", imageUrl);
+				}
+
+				startActivity(showCoffeeTypeDetailedViewIntent);
+
+
+			}
+		});
+	}
+
+	private void initActionBar() {
+		mActionBar = getSupportActionBar();
+		mActionBar.setDisplayShowHomeEnabled(false);
+		mActionBar.setDisplayShowTitleEnabled(false);
+		mInflater = LayoutInflater.from(this);
+		mCustomActionBarView = mInflater.inflate(R.layout.percolate_action_bar, null);
+		ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+		mActionBar.setCustomView(mCustomActionBarView, lp);
+		mActionBar.setDisplayShowCustomEnabled(true);
 	}
 
 	@Override
@@ -48,13 +95,14 @@ public class CoffeeListActivity extends JacksonSpringAndroidSpicedActivity {
 		spiceManagerBinary.shouldStop();
 	}
 
+
 	private void updateListViewContent(CoffeeTypeList coffeeTypes) {
 		CoffeeTypeListSpiceAdapter coffeeTypeListSpiceAdapter = new CoffeeTypeListSpiceAdapter(this, spiceManagerBinary, coffeeTypes);
 		coffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
 	}
 
 	private void performIndexRequest() {
-		CoffeeListActivity.this.setProgressBarIndeterminateVisibility(true);
+		CoffeeTypeListViewActivity.this.setProgressBarIndeterminateVisibility(true);
 
 		CoffeeTypeIndexRequest request = new CoffeeTypeIndexRequest(getResources());
 		mLastRequestCacheKey = request.getCacheKey(getResources());
@@ -65,13 +113,13 @@ public class CoffeeListActivity extends JacksonSpringAndroidSpicedActivity {
 
 	private void animateProgressBar(final ProgressBarAnimation progressBarAnimation) {
 
-		new ListProgressBarAnimationBuilder(coffeeTypesListLayout)
+		new ListProgressBarAnimationFactory(coffeeTypesListLayout)
 				.shown(progressBarAnimation.mShown)
 				.onStartAnimationRunnable(new Runnable() {
 					@Override
 					public void run() {
 						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) coffeeTypesListLayout.getLayoutParams();
-						lp.bottomMargin = ListProgressBarAnimationBuilder.PROGRESS_BAR_END_POSITION;
+						lp.bottomMargin = ListProgressBarAnimationFactory.PROGRESS_BAR_END_POSITION;
 						coffeeTypesListLayout.setLayoutParams(lp);
 					}
 				})
@@ -81,12 +129,17 @@ public class CoffeeListActivity extends JacksonSpringAndroidSpicedActivity {
 						if (progressBarAnimation.mShown) {
 							coffeeTypesProgressBar.setVisibility(View.GONE);
 							RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) coffeeTypesListLayout.getLayoutParams();
-							lp.topMargin = -ListProgressBarAnimationBuilder.PROGRESS_BAR_END_POSITION;
+							lp.topMargin = -ListProgressBarAnimationFactory.PROGRESS_BAR_END_POSITION;
 							coffeeTypesListLayout.setLayoutParams(lp);
 						}
 					}
 				})
 				.animate();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
 	}
 
 	// ------ HELPERS ------

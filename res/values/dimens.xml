@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="coffee_standard_buffer_padding">8dp</dimen>
+    <dimen name="coffee_detailed_item_updated_at_text_view_font_size">12sp</dimen>
 </resources>

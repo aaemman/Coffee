@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * Created by AlexanderEmmanuel on 2014-10-16.
  */
-public abstract class AnimationBuilder {
+public abstract class AnimationFactory {
 	protected final View mView;
 
 
@@ -19,31 +19,31 @@ public abstract class AnimationBuilder {
 	private Runnable mOnCancelAnimationRunnable;
 	private Runnable mOnRepeatAnimationRunnable;
 
-	public AnimationBuilder(View view) {
+	public AnimationFactory(View view) {
 		mView = view;
 	}
 
-	public AnimationBuilder onStartAnimationRunnable(Runnable onStartAnimationRunnable) {
+	public AnimationFactory onStartAnimationRunnable(Runnable onStartAnimationRunnable) {
 		mOnStartAnimationRunnable = onStartAnimationRunnable;
 		return this;
 	}
 
-	public AnimationBuilder onEndAnimationRunnable(Runnable onEndAnimationRunnable) {
+	public AnimationFactory onEndAnimationRunnable(Runnable onEndAnimationRunnable) {
 		mOnEndAnimationRunnable = onEndAnimationRunnable;
 		return this;
 	}
 
-	public AnimationBuilder onCancelAnimationRunnable(Runnable onCancelAnimationRunnable) {
+	public AnimationFactory onCancelAnimationRunnable(Runnable onCancelAnimationRunnable) {
 		mOnCancelAnimationRunnable = onCancelAnimationRunnable;
 		return this;
 	}
 
-	public AnimationBuilder onRepeatAnimationRunnable(Runnable onRepeatAnimationRunnable) {
+	public AnimationFactory onRepeatAnimationRunnable(Runnable onRepeatAnimationRunnable) {
 		mOnRepeatAnimationRunnable = onRepeatAnimationRunnable;
 		return this;
 	}
 
-	public AnimationBuilder duration(int duration) {
+	public AnimationFactory duration(int duration) {
 		mDuration = duration;
 		return this;
 	}

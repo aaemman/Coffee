@@ -37,10 +37,7 @@ public class CoffeeTypeIndexRequest extends SpringAndroidSpiceRequest<CoffeeType
 		headers.add("Accept", "application/json");
 
 
-		CoffeeTypeList coffeeTypes = getRestTemplate().exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers), CoffeeTypeList.class).getBody();
-		for(CoffeeType ct : coffeeTypes) {
-			Log.i("ALEX", ct.toString());
-		}
+		CoffeeTypeList coffeeTypes = getRestTemplate().exchange(url.toLowerCase(), HttpMethod.GET, new HttpEntity<Object>(headers), CoffeeTypeList.class).getBody();
 		return coffeeTypes;
 
 	}

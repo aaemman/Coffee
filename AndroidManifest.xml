@@ -3,11 +3,8 @@
     package="com.percolate.coffee"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission
-        android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <uses-permission
-        android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.CoffeeListActivity"
+            android:name=".activity.CoffeeTypeListViewActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,11 +20,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.JacksonSpringAndroidSpicedActivity"
-            android:label="@string/title_activity_jackson_spring_android_spiced">
-        </activity>
 
+
+        <activity
+            android:name=".activity.CoffeeTypeDetailedViewAcitivity"
+            android:label="@string/title_activity_coffee_type_detailed_view_acitivity"
+            android:parentActivityName=".activity.CoffeeTypeListViewActivity">
+
+        </activity>
         <!-- SERVICES -->
         <service
             android:name="com.octo.android.robospice.Jackson2SpringAndroidSpiceService"
