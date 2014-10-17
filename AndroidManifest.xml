@@ -32,7 +32,10 @@
         <service
             android:name="com.octo.android.robospice.Jackson2SpringAndroidSpiceService"
             android:exported="false"/>
-        r
+        <service
+            android:name="com.octo.android.robospice.spicelist.okhttp.OkHttpBitmapSpiceService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
