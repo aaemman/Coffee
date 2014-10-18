@@ -51,6 +51,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 	private String             mImageUrl;
 	private String             mLastRequestCacheKey;
 	private MenuItem           mShareActionItem;
+	private View               mShareActionView;
 
 	private Bitmap mPictureBitmap;
 
@@ -100,16 +101,18 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		mShareActionItem = menu.findItem(R.id.action_share);
 		mShareActionItem.setActionView(actionView);
 
-		mShareActionItem.getActionView().findViewById(R.id.share_action_view).setOnClickListener(new View.OnClickListener() {
+		mShareActionView = mShareActionItem.getActionView().findViewById(R.id.share_action_view);
+		mShareActionView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				startActivity(Intent.createChooser(
 						getDefaultShareIntent(),
 						"Select an application to share with..."));
+
 			}
 		});
 
-		mShareActionItem.setEnabled(false);
+		mShareActionView.setEnabled(false);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -215,7 +218,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 			updateTextViewContent(coffeeTypeDetailed);
 
 			if (mImageUrl == null || mImageUrl.isEmpty()) {
-				mShareActionItem.setEnabled(true);
+				mShareActionView.setEnabled(true);
 			}
 
 
@@ -233,7 +236,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		public void onRequestSuccess(Bitmap bitmap) {
 			Log.i("GetImageFromUrlRequestListener", "GET IMAGE FROM URL REQUEST SUCCESS!");
 			mPictureBitmap = bitmap;
-			mShareActionItem.setEnabled(true);
+			mShareActionView.setEnabled(true);
 			updateImageViewContents(bitmap);
 
 		}
