@@ -22,8 +22,8 @@ import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.simple.BitmapRequest;
 import com.percolate.coffee.R;
 import com.percolate.coffee.util.animation.FadeInAnimationFactory;
-import com.percolate.coffee.util.api.pojo.CoffeeType;
-import com.percolate.coffee.util.api.pojo.CoffeeTypeDetailed;
+import com.percolate.coffee.model.CoffeeType;
+import com.percolate.coffee.model.CoffeeTypeDetailed;
 import com.percolate.coffee.util.api.request.CoffeeTypeShowRequest;
 import com.percolate.coffee.util.view.ImageUtils;
 
@@ -66,7 +66,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		Intent intent = getIntent();
 
 		mCoffeeType = (CoffeeType) intent.getSerializableExtra("coffeeType");
-		mId = mCoffeeType.getId();
+		mId = mCoffeeType.getCoffeeTypeId();
 		if (mId == null) {
 			throw new NullPointerException(
 					"COFFEETYPE ID WAS NULL; MAKE SURE THAT YOU ARE ADDING A " +

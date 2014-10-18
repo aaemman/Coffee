@@ -1,16 +1,12 @@
 package com.percolate.coffee.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.NinePatchDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -21,12 +17,15 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.spicelist.okhttp.OkHttpBitmapSpiceManager;
+import com.orm.SugarRecord;
 import com.percolate.coffee.R;
 import com.percolate.coffee.adapter.CoffeeTypeListSpiceAdapter;
 import com.percolate.coffee.util.animation.ListProgressBarAnimationFactory;
-import com.percolate.coffee.util.api.pojo.CoffeeType;
-import com.percolate.coffee.util.api.pojo.CoffeeTypeList;
+import com.percolate.coffee.model.CoffeeType;
+import com.percolate.coffee.model.CoffeeTypeList;
 import com.percolate.coffee.util.api.request.CoffeeTypeIndexRequest;
+
+import java.util.List;
 
 
 public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivity {
@@ -64,6 +63,14 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 			}
 		});
+
+		List<CoffeeType> coffeeTypes = SugarRecord.listAll(CoffeeType.class);
+
+		if(coffeeTypes != null && coffeeTypes.size() > 0){
+			CoffeeTypeListSpiceAdapter coffeeTypeListSpiceAdapter = new CoffeeTypeListSpiceAdapter(this, spiceManagerBinary, coffeeTypes);
+			coffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
+		}
+
 	}
 
 	private void initActionBar() {
@@ -169,6 +176,7 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 			Log.i("CoffeeTypeIndexRequestListener", "COFFEE INDEX REQUEST SUCCESS!");
 			animateProgressBar(ProgressBarAnimation.EXIT);
 			updateListViewContent(coffeeTypes);
+			coffeeTypes.saveAll();
 
 		}
 	}

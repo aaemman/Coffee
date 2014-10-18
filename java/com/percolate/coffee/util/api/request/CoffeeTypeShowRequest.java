@@ -4,7 +4,7 @@ import android.content.res.Resources;
 
 import com.octo.android.robospice.request.springandroid.SpringAndroidSpiceRequest;
 import com.percolate.coffee.R;
-import com.percolate.coffee.util.api.pojo.CoffeeTypeDetailed;
+import com.percolate.coffee.model.CoffeeTypeDetailed;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

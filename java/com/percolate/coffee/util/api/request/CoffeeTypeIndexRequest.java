@@ -1,13 +1,10 @@
 package com.percolate.coffee.util.api.request;
 
 import android.content.res.Resources;
-import android.util.Log;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octo.android.robospice.request.springandroid.SpringAndroidSpiceRequest;
 import com.percolate.coffee.R;
-import com.percolate.coffee.util.api.pojo.CoffeeType;
-import com.percolate.coffee.util.api.pojo.CoffeeTypeList;
+import com.percolate.coffee.model.CoffeeTypeList;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

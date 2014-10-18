@@ -1,7 +1,6 @@
 package com.percolate.coffee.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.octo.android.robospice.request.okhttp.simple.OkHttpBitmapRequest;
@@ -9,7 +8,7 @@ import com.octo.android.robospice.request.simple.IBitmapRequest;
 import com.octo.android.robospice.spicelist.SpiceListItemView;
 import com.octo.android.robospice.spicelist.okhttp.OkHttpBitmapSpiceManager;
 import com.octo.android.robospice.spicelist.okhttp.OkHttpSpiceArrayAdapter;
-import com.percolate.coffee.util.api.pojo.CoffeeType;
+import com.percolate.coffee.model.CoffeeType;
 import com.percolate.coffee.view.ui.CoffeeTypeSpiceListItem;
 
 import java.io.File;

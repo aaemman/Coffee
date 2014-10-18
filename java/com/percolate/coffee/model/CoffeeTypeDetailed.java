@@ -1,6 +1,4 @@
-package com.percolate.coffee.util.api.pojo;
-
-import android.util.Log;
+package com.percolate.coffee.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

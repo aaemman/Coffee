@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.octo.android.robospice.spicelist.SpiceListItemView;
 import com.percolate.coffee.R;
-import com.percolate.coffee.util.api.pojo.CoffeeType;
+import com.percolate.coffee.model.CoffeeType;
 
 /**
  * Created by AlexanderEmmanuel on 2014-10-16.
