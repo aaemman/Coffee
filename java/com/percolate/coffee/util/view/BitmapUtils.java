@@ -16,10 +16,17 @@ import java.io.OutputStream;
 import java.net.URL;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-16.
+ * A generic utility class for all utilities relating to {@link android.graphics.Bitmap}
  */
-public class ImageUtils {
+public class BitmapUtils {
 
+	/**
+	 *A method which returns a {@link android.net.Uri} for a givem {@link android.graphics.Bitmap}
+	 * @param inContext the applications current context
+	 * @param inImage the {@link android.graphics.Bitmap} for which a {@link android.net.Uri} is desired
+	 * @param filename the filename desired for the image when it is saved to storage
+	 * @return A {@link android.net.Uri} for a given bitmap
+	 */
 	public static Uri getImageUri(Context inContext, Bitmap inImage, String filename) {
 
 		String path = Environment.getExternalStorageDirectory().toString();

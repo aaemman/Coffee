@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-16.
+ * Custom ArrayList made specifically to handle lists of {@link com.percolate.coffee.model.CoffeeType}. This class is required in order for {@link com.octo.android.robospice.spicelist.simple.SpiceArrayAdapter} to work with CoffeeType; ex. {@link com.percolate.coffee.adapter.CoffeeTypeListSpiceAdapter}
  */
 public class CoffeeTypeList extends ArrayList<CoffeeType> {
 
+	/**
+	 * Saves all values in this list given that they are unique
+	 */
 	public void saveAll() {
 		List<CoffeeType> coffeeTypeList;
 		for (CoffeeType coffeeType : this) {

@@ -5,8 +5,9 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
+
 /**
- * Created by AlexanderEmmanuel on 2014-10-16.
+ * A basic bounce animation used which extends {@link com.percolate.coffee.util.animation.AnimationFactory}
  */
 public class ListProgressBarAnimationFactory extends AnimationFactory {
 
@@ -28,6 +29,11 @@ public class ListProgressBarAnimationFactory extends AnimationFactory {
 		super(view);
 	}
 
+	/**
+	 *
+	 * @param shown boolean representing whether or not the view which is going to be animated is currently shown or not
+	 * @return
+	 */
 	public AnimationFactory shown(boolean shown) {
 		mShown = shown;
 		return this;

@@ -11,7 +11,7 @@ import com.percolate.coffee.R;
 import com.percolate.coffee.model.CoffeeType;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-16.
+ * ListItem view for {@link com.percolate.coffee.activity.CoffeeTypeListViewActivity}
  */
 public class CoffeeTypeSpiceListItem extends RelativeLayout implements SpiceListItemView<CoffeeType> {
 	private CoffeeType mCoffeeType;
@@ -27,6 +27,10 @@ public class CoffeeTypeSpiceListItem extends RelativeLayout implements SpiceList
 		inflateView(context);
 	}
 
+	/**
+	 * inflates the layout R.layout.coffee_list_item into this view and instantiates all its components
+	 * @param context
+	 */
 	private void inflateView(Context context) {
 		LayoutInflater.from(context).inflate(R.layout.coffee_list_item, this);
 		mName = (TextView) findViewById(R.id.coffee_list_item_name_text_view);

@@ -11,12 +11,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-16.
+ * Index Request; gets a {@link java.util.List} of {@link com.percolate.coffee.model.CoffeeType}
  */
 public class CoffeeTypeIndexRequest extends SpringAndroidSpiceRequest<CoffeeTypeList> {
 
 	Resources mResources;
 
+	/**
+	 *Constructor
+	 * @param resources applications resources
+	 */
 	public CoffeeTypeIndexRequest(Resources resources) {
 		super(CoffeeTypeList.class);
 		mResources = resources;
@@ -39,6 +43,10 @@ public class CoffeeTypeIndexRequest extends SpringAndroidSpiceRequest<CoffeeType
 
 	}
 
+	/**
+	 * @param resources
+	 * @return a String which can be used as a standard key for caching the results of this request
+	 */
 	public String getCacheKey(Resources resources) {
 		return resources.getString(R.string.percolate_coffee_coffee_type_index_cache_key);
 	}

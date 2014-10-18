@@ -78,6 +78,9 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 	}
 
+	/**
+	 * initialize the actionbar
+	 */
 	private void initActionBar() {
 		mActionBar = getSupportActionBar();
 		mActionBar.setDisplayShowHomeEnabled(false);
@@ -103,6 +106,10 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 	}
 
 
+	/**
+	 *
+	 * @param coffeeTypes the {@link com.percolate.coffee.model.CoffeeTypeList} which is desired to be the adapter of mCoffeeTypesListView, if and adapter already exists, it is smply notified of new data
+	 */
 	private void updateListViewContent(CoffeeTypeList coffeeTypes) {
 		if (mCoffeeTypesListView.getAdapter() != null) {
 			mCoffeeTypesListView.deferNotifyDataSetChanged();
@@ -112,6 +119,9 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 		}
 	}
 
+	/**
+	 * Perform a CoffeeType index request from the coffeeapi server
+	 */
 	private void performIndexRequest() {
 		CoffeeTypeListViewActivity.this.setProgressBarIndeterminateVisibility(true);
 
@@ -122,6 +132,10 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 		animateProgressBar(ProgressBarAnimation.ENTER);
 	}
 
+	/**
+	 * Initialize the animation of the progress bar (either in or out)
+	 * @param progressBarAnimation an enum ({@link com.percolate.coffee.activity.CoffeeTypeListViewActivity.ProgressBarAnimation}) used to determin whether to animate the progress bar as an entrance or an exit
+	 */
 	private void animateProgressBar(final ProgressBarAnimation progressBarAnimation) {
 
 		new ListProgressBarAnimationFactory(mCoffeeTypesListLayout)
@@ -155,6 +169,9 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 	// ------ HELPERS ------
 
+	/**
+	 * an enum used to determin whether to animate the progress bar as an entrance or an exit
+	 */
 	private enum ProgressBarAnimation {
 		ENTER(false),
 		EXIT(true);
@@ -168,6 +185,9 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 	// ------ INNER CLASSES ------
 
+	/**
+	 * A request listener which is notified when a request (index requests) whether it fails or succeeds
+	 */
 	private class CoffeeTypeIndexRequestListener implements RequestListener<CoffeeTypeList> {
 		@Override
 		public void onRequestFailure(SpiceException spiceException) {

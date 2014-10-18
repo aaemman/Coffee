@@ -8,6 +8,9 @@ import com.orm.dsl.Ignore;
 
 import java.io.Serializable;
 
+/**
+ * Base model class for coffee type posts.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CoffeeType extends SugarRecord<CoffeeType> implements Serializable {
 	private String mDescription;

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-17.
+ * A basic fade animation which extends {@link com.percolate.coffee.util.animation.AnimationFactory}
  */
 public class FadeInAnimationFactory extends AnimationFactory  {
 
@@ -29,11 +29,19 @@ public class FadeInAnimationFactory extends AnimationFactory  {
 		return this;
 	}
 
+	/**
+	 * @param fadeStartValue the float value of transparency that the animation will start at
+	 * @return
+	 */
 	public FadeInAnimationFactory fadeStartValue(float fadeStartValue){
 		mFadeStartValue = fadeStartValue;
 		return this;
 	}
 
+	/**
+	 * @param fadeEndValue the float value of transparency that the animation will end at
+	 * @return
+	 */
 	public FadeInAnimationFactory fadeEndValue(float fadeEndValue){
 		mFadeEndValue = fadeEndValue;
 		return this;

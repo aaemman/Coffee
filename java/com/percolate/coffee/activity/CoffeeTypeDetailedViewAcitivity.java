@@ -26,7 +26,7 @@ import com.percolate.coffee.model.CoffeeType;
 import com.percolate.coffee.model.CoffeeTypeDetailed;
 import com.percolate.coffee.util.animation.FadeInAnimationFactory;
 import com.percolate.coffee.util.api.request.CoffeeTypeShowRequest;
-import com.percolate.coffee.util.view.ImageUtils;
+import com.percolate.coffee.util.view.BitmapUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -53,7 +53,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 	private View               mCustomActionBarView;
 	private CoffeeType         mCoffeeType;
 	private CoffeeTypeDetailed mCoffeeTypeDetailed;
-	private String             mId;
+	private String             mCoffeeTypeId;
 	private String             mImageUrl;
 	private String             mLastRequestCacheKey;
 	private MenuItem           mShareActionItem;
@@ -72,8 +72,8 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		Intent intent = getIntent();
 
 		mCoffeeType = (CoffeeType) intent.getSerializableExtra("coffeeType");
-		mId = mCoffeeType.getCoffeeTypeId();
-		if (mId == null) {
+		mCoffeeTypeId = mCoffeeType.getCoffeeTypeId();
+		if (mCoffeeTypeId == null) {
 			throw new NullPointerException(
 					"COFFEETYPE ID WAS NULL; MAKE SURE THAT YOU ARE ADDING A " +
 							"COFFEETYPE AS AN INTENT EXTRA UNDER NAME \'coffeeType\'");
@@ -94,7 +94,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 			mImageLoadingProgressBar.setVisibility(View.GONE);
 		}
 
-		List<CoffeeTypeDetailed> coffeeTypeDetailedList = SugarRecord.find(CoffeeTypeDetailed.class, "m_coffee_type_id = ?", mId);
+		List<CoffeeTypeDetailed> coffeeTypeDetailedList = SugarRecord.find(CoffeeTypeDetailed.class, "m_coffee_type_id = ?", mCoffeeTypeId);
 
 		if (coffeeTypeDetailedList != null && coffeeTypeDetailedList.size() > 0) {
 			if (coffeeTypeDetailedList.get(0) != null) {
@@ -146,6 +146,10 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		return true;
 	}
 
+	/**
+	 * Create an Intentfor sharing the {@link com.percolate.coffee.model.CoffeeTypeDetailed}
+	 * @return
+	 */
 	private Intent getDefaultShareIntent() {
 
 		Intent intent = new Intent(Intent.ACTION_SEND);
@@ -154,13 +158,16 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		intent.putExtra(Intent.EXTRA_TEXT, mCoffeeTypeDetailed.getDescription());
 
 		if (!(mImageUrl == null || mImageUrl.isEmpty())) {
-			Uri uri = ImageUtils.getImageUri(getBaseContext(), mPictureBitmap, "coffeeLatestSharedImage.jpg");
+			Uri uri = BitmapUtils.getImageUri(getBaseContext(), mPictureBitmap, "coffeeLatestSharedImage.jpg");
 			intent.putExtra(Intent.EXTRA_STREAM, uri);
 		}
 
 		return intent;
 	}
 
+	/**
+	 * Inialize the action bar
+	 */
 	private void initActionBar() {
 		mActionBar = getSupportActionBar();
 		mActionBar.setDisplayShowHomeEnabled(false);
@@ -177,6 +184,10 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		mActionBar.setDisplayShowCustomEnabled(true);
 	}
 
+	/**
+	 * Update any imageViews within this activities content view is
+	 * @param coffeeTypeDetailed the Id for which to search for a {@link com.percolate.coffee.model.CoffeeTypeDetailed}
+	 */
 	private void updateTextViewContent(CoffeeTypeDetailed coffeeTypeDetailed) {
 		mNameTextView.setText(coffeeTypeDetailed.getName());
 		mDescriptionTextView.setText(coffeeTypeDetailed.getDescription());
@@ -187,6 +198,10 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 				.animate();
 	}
 
+	/**
+	 * Update the imageView within this activities content view is
+	 * @param bitmap the bitmap which is to be set as the background of the mPictureImageView
+	 */
 	private void updateImageViewContents(Bitmap bitmap) {
 		mPictureImageView.setImageBitmap(bitmap);
 		new FadeInAnimationFactory(mPictureImageView)
@@ -194,9 +209,11 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 				.animate();
 	}
 
-
+	/**
+	 * Perform a CoffeeType show request from the coffeeapi server for a specific CoffeeType given a coffetTypeId
+	 */
 	private void performShowRequest() {
-		CoffeeTypeShowRequest request = new CoffeeTypeShowRequest(mId, getResources());
+		CoffeeTypeShowRequest request = new CoffeeTypeShowRequest(mCoffeeTypeId, getResources());
 		mLastRequestCacheKey = request.getCacheKey(getResources());
 		spiceManager.execute(request, mLastRequestCacheKey, DurationInMillis.ONE_MINUTE, new CoffeeTypeShowRequestListener());
 
@@ -223,6 +240,10 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 
 	// ------ INNER CLASSES ------
 
+
+	/**
+	 * A request listener which is notified when a request (show requests) whether it fails or succeeds
+	 */
 	private class CoffeeTypeShowRequestListener implements RequestListener<CoffeeTypeDetailed> {
 		@Override
 		public void onRequestFailure(SpiceException spiceException) {
@@ -266,6 +287,9 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		}
 	}
 
+	/**
+	 *  A request listener which is notified when a retrieve nitmap request whether it fails or succeeds
+	 */
 	private class GetImageFromUrlRequestListener implements RequestListener<Bitmap> {
 		@Override
 		public void onRequestFailure(SpiceException spiceException) {

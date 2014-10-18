@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- *
+ * SpiceArrayAdapter which manages the list specifically for the {@link com.percolate.coffee.activity.CoffeeTypeListViewActivity}
  *
  */
 public class CoffeeTypeListSpiceAdapter extends OkHttpSpiceArrayAdapter<CoffeeType> {

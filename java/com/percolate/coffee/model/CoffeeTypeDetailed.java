@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-17.
+ * Extension of {@link com.percolate.coffee.model.CoffeeType}, contains extra fields needed for the show (detailed coffee type) requests
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)

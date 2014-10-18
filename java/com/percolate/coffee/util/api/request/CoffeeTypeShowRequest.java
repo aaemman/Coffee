@@ -11,19 +11,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-17.
+ * Show Request; gets a single {@link com.percolate.coffee.model.CoffeeType} given a {@link com.percolate.coffee.model.CoffeeType} CoffeeTypeId
  */
 public class CoffeeTypeShowRequest extends SpringAndroidSpiceRequest<CoffeeTypeDetailed> {
 
 	Resources mResources;
 	String    mId;
 
-	public CoffeeTypeShowRequest(String id, Resources resources) {
+	/**
+	 *Constructor
+	 * @param coffeeTypeId {@link com.percolate.coffee.model.CoffeeType} mCoffeeTypeId
+	 * @param resources applications resources
+	 */
+	public CoffeeTypeShowRequest(String coffeeTypeId, Resources resources) {
 		super(CoffeeTypeDetailed.class);
 		mResources = resources;
-		mId = id;
+		mId = coffeeTypeId;
 
-		if (id == null) {
+		if (coffeeTypeId == null) {
 			throw new NullPointerException("THE ID CANNOT BE NULL");
 		}
 	}
@@ -46,6 +51,10 @@ public class CoffeeTypeShowRequest extends SpringAndroidSpiceRequest<CoffeeTypeD
 
 	}
 
+	/**
+	 * @param resources
+	 * @return a String which can be used as a standard key for caching the results of this request
+	 */
 	public String getCacheKey(Resources resources) {
 		return resources.getString(R.string.percolate_coffee_coffee_type_show_cache_key);
 	}
