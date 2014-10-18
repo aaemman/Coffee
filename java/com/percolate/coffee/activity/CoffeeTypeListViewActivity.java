@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
@@ -20,25 +21,28 @@ import com.octo.android.robospice.spicelist.okhttp.OkHttpBitmapSpiceManager;
 import com.orm.SugarRecord;
 import com.percolate.coffee.R;
 import com.percolate.coffee.adapter.CoffeeTypeListSpiceAdapter;
-import com.percolate.coffee.util.animation.ListProgressBarAnimationFactory;
 import com.percolate.coffee.model.CoffeeType;
 import com.percolate.coffee.model.CoffeeTypeList;
+import com.percolate.coffee.util.animation.ListProgressBarAnimationFactory;
 import com.percolate.coffee.util.api.request.CoffeeTypeIndexRequest;
 
 import java.util.List;
 
-
+/**
+ * Activity class for the details page of a {@link com.percolate.coffee.model.CoffeeType }
+ */
 public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivity {
 	private String mLastRequestCacheKey;
 	private OkHttpBitmapSpiceManager spiceManagerBinary = new OkHttpBitmapSpiceManager();
 
-	private RelativeLayout coffeeTypesListLayout;
-	private ProgressBar    coffeeTypesProgressBar;
-	private ListView       coffeeTypesListView;
-
+	private RelativeLayout mCoffeeTypesListLayout;
+	private RelativeLayout mCoffeeTypesListInnerProgressLayout;
+	private ProgressBar    mCoffeeTypesProgressBar;
+	private ListView       mCoffeeTypesListView;
 	private ActionBar      mActionBar;
 	private LayoutInflater mInflater;
 	private View           mCustomActionBarView;
+	private View           mErrorPromptView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +51,12 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 		initActionBar();
 
-		coffeeTypesListLayout = (RelativeLayout) findViewById(R.id.coffee_types_list_linear_layout);
-		coffeeTypesProgressBar = (ProgressBar) findViewById(R.id.coffee_types_list_progress_bar);
-		coffeeTypesListView = (ListView) findViewById(R.id.coffee_types_list_list_view);
+		mCoffeeTypesListLayout = (RelativeLayout) findViewById(R.id.coffee_types_list_relative_layout);
+		mCoffeeTypesListInnerProgressLayout = (RelativeLayout) findViewById(R.id.coffee_types_list_inner_progress_layout);
+		mCoffeeTypesProgressBar = (ProgressBar) findViewById(R.id.coffee_types_list_progress_bar);
+		mCoffeeTypesListView = (ListView) findViewById(R.id.coffee_types_list_list_view);
 
-		coffeeTypesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		mCoffeeTypesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				CoffeeType clickedCoffeeType = (CoffeeType) adapterView.getItemAtPosition(i);
@@ -66,9 +71,9 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 		List<CoffeeType> coffeeTypes = SugarRecord.listAll(CoffeeType.class);
 
-		if(coffeeTypes != null && coffeeTypes.size() > 0){
+		if (coffeeTypes != null && coffeeTypes.size() > 0) {
 			CoffeeTypeListSpiceAdapter coffeeTypeListSpiceAdapter = new CoffeeTypeListSpiceAdapter(this, spiceManagerBinary, coffeeTypes);
-			coffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
+			mCoffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
 		}
 
 	}
@@ -99,11 +104,11 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 
 	private void updateListViewContent(CoffeeTypeList coffeeTypes) {
-		if (coffeeTypesListView.getAdapter() != null) {
-			coffeeTypesListView.deferNotifyDataSetChanged();
+		if (mCoffeeTypesListView.getAdapter() != null) {
+			mCoffeeTypesListView.deferNotifyDataSetChanged();
 		} else {
 			CoffeeTypeListSpiceAdapter coffeeTypeListSpiceAdapter = new CoffeeTypeListSpiceAdapter(this, spiceManagerBinary, coffeeTypes);
-			coffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
+			mCoffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
 		}
 	}
 
@@ -119,24 +124,24 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 	private void animateProgressBar(final ProgressBarAnimation progressBarAnimation) {
 
-		new ListProgressBarAnimationFactory(coffeeTypesListLayout)
+		new ListProgressBarAnimationFactory(mCoffeeTypesListLayout)
 				.shown(progressBarAnimation.mShown)
 				.onStartAnimationRunnable(new Runnable() {
 					@Override
 					public void run() {
-						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) coffeeTypesListLayout.getLayoutParams();
+						RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mCoffeeTypesListLayout.getLayoutParams();
 						lp.bottomMargin = ListProgressBarAnimationFactory.PROGRESS_BAR_END_POSITION;
-						coffeeTypesListLayout.setLayoutParams(lp);
+						mCoffeeTypesListLayout.setLayoutParams(lp);
 					}
 				})
 				.onEndAnimationRunnable(new Runnable() {
 					@Override
 					public void run() {
 						if (progressBarAnimation.mShown) {
-							coffeeTypesProgressBar.setVisibility(View.GONE);
-							RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) coffeeTypesListLayout.getLayoutParams();
+							mCoffeeTypesProgressBar.setVisibility(View.GONE);
+							RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mCoffeeTypesListLayout.getLayoutParams();
 							lp.topMargin = -ListProgressBarAnimationFactory.PROGRESS_BAR_END_POSITION;
-							coffeeTypesListLayout.setLayoutParams(lp);
+							mCoffeeTypesListLayout.setLayoutParams(lp);
 						}
 					}
 				})
@@ -169,6 +174,13 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 			Log.i("CoffeeTypeIndexRequestListener", "COFFEE INDEX REQUEST FAILED");
 			Log.i("CoffeeTypeIndexRequestListener", "MESSAGE -> " + spiceException.getLocalizedMessage());
 			animateProgressBar(ProgressBarAnimation.EXIT);
+
+			mErrorPromptView = mInflater.inflate(R.layout.an_error_has_occured, null);
+			((TextView) mErrorPromptView.findViewById(R.id.error_occured_prompt_text)).setText(spiceException.getLocalizedMessage());
+
+			if (mCoffeeTypesListView.getHeaderViewsCount() == 0) {
+				mCoffeeTypesListView.addHeaderView(mErrorPromptView);
+			}
 		}
 
 		@Override
@@ -178,6 +190,10 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 			updateListViewContent(coffeeTypes);
 			coffeeTypes.saveAll();
 
+
+			if (mCoffeeTypesListView.getHeaderViewsCount() > 0 && mErrorPromptView != null) {
+				mCoffeeTypesListView.removeHeaderView(mErrorPromptView);
+			}
 		}
 	}
 

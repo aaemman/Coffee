@@ -20,23 +20,29 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.simple.BitmapRequest;
+import com.orm.SugarRecord;
 import com.percolate.coffee.R;
-import com.percolate.coffee.util.animation.FadeInAnimationFactory;
 import com.percolate.coffee.model.CoffeeType;
 import com.percolate.coffee.model.CoffeeTypeDetailed;
+import com.percolate.coffee.util.animation.FadeInAnimationFactory;
 import com.percolate.coffee.util.api.request.CoffeeTypeShowRequest;
 import com.percolate.coffee.util.view.ImageUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import roboguice.util.temp.Ln;
 
+/**
+ * Activity class for the details page of a {@link com.percolate.coffee.model.CoffeeTypeDetailed }
+ */
 public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedActivity {
 
 
 	private LinearLayout       mDetailedViewLayout;
+	private LinearLayout       mImageLoadLayout;
 	private TextView           mNameTextView;
 	private TextView           mDescriptionTextView;
 	private ImageView          mPictureImageView;
@@ -52,6 +58,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 	private String             mLastRequestCacheKey;
 	private MenuItem           mShareActionItem;
 	private View               mShareActionView;
+	private View               mErrorPromptView;
 
 	private Bitmap mPictureBitmap;
 
@@ -61,7 +68,6 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_coffee_type_detailed_view_acitivity);
 		initActionBar();
-
 
 		Intent intent = getIntent();
 
@@ -75,16 +81,27 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 
 		mImageUrl = mCoffeeType.getImageUrl();
 
-		if (mImageUrl == null || mImageUrl.isEmpty()) {
-			mImageLoadingProgressBar = (ProgressBar) findViewById(R.id.coffee_detailed_item_image_loading_progress_bar);
-			mImageLoadingProgressBar.setVisibility(View.GONE);
-		}
-
+		mImageLoadingProgressBar = (ProgressBar) findViewById(R.id.coffee_detailed_item_image_loading_progress_bar);
+		mImageLoadLayout = (LinearLayout) findViewById(R.id.coffee_detailed_item_image_load_layout);
 		mDetailedViewLayout = (LinearLayout) findViewById(R.id.coffee_type_detailed_view_layout);
 		mNameTextView = (TextView) findViewById(R.id.coffee_detailed_item_name_text_view);
 		mDescriptionTextView = (TextView) findViewById(R.id.coffee_detailed_item_description_text_view);
 		mPictureImageView = (ImageView) findViewById(R.id.coffee_detailed_item_picture_image_view);
 		mUpdatedAtTextView = (TextView) findViewById(R.id.coffee_detailed_item_updated_at_text_view);
+		mErrorPromptView = mInflater.inflate(R.layout.an_error_has_occured, null);
+
+		if (mImageUrl == null || mImageUrl.isEmpty()) {
+			mImageLoadingProgressBar.setVisibility(View.GONE);
+		}
+
+		List<CoffeeTypeDetailed> coffeeTypeDetailedList = SugarRecord.find(CoffeeTypeDetailed.class, "m_coffee_type_id = ?", mId);
+
+		if (coffeeTypeDetailedList != null && coffeeTypeDetailedList.size() > 0) {
+			if (coffeeTypeDetailedList.get(0) != null) {
+				updateTextViewContent(coffeeTypeDetailedList.get(0));
+			}
+		}
+
 	}
 
 	@Override
@@ -116,6 +133,19 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				break;
+
+			default:
+				break;
+		}
+		return true;
+	}
+
 	private Intent getDefaultShareIntent() {
 
 		Intent intent = new Intent(Intent.ACTION_SEND);
@@ -129,19 +159,6 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		}
 
 		return intent;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				finish();
-				break;
-
-			default:
-				break;
-		}
-		return true;
 	}
 
 	private void initActionBar() {
@@ -198,6 +215,8 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 			//the standard Bitmap spiceRequest does not have a cache key so I am using its class name as a replacement.
 			mLastRequestCacheKey = request.getClass().getSimpleName();
 			spiceManager.execute(bitmapRequest, mLastRequestCacheKey, DurationInMillis.ONE_MINUTE, new GetImageFromUrlRequestListener());
+
+			mImageLoadingProgressBar.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -209,19 +228,41 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		public void onRequestFailure(SpiceException spiceException) {
 			Log.i("CoffeeTypeShowRequestListener", "COFFEE SHOW REQUEST FAILED");
 			Log.i("CoffeeTypeShowRequestListener", "MESSAGE -> " + spiceException.getLocalizedMessage());
+
+			mImageLoadingProgressBar = (ProgressBar) findViewById(R.id.coffee_detailed_item_image_loading_progress_bar);
+			mImageLoadingProgressBar.setVisibility(View.GONE);
+
+			if (mErrorPromptView != null && mErrorPromptView.getParent() == null) {
+				((TextView) mErrorPromptView.findViewById(R.id.error_occured_prompt_text)).setText(spiceException.getLocalizedMessage());
+				mImageLoadLayout.addView(mErrorPromptView, 0);
+			}
 		}
 
 		@Override
 		public void onRequestSuccess(CoffeeTypeDetailed coffeeTypeDetailed) {
 			Log.i("CoffeeTypeShowRequestListener", "COFFEE SHOW REQUEST SUCCESS!");
 			mCoffeeTypeDetailed = coffeeTypeDetailed;
+
+			List<CoffeeTypeDetailed> coffeeTypeDetailedList = SugarRecord.find(CoffeeTypeDetailed.class, "m_coffee_type_id = ?", mCoffeeTypeDetailed.getCoffeeTypeId());
+			if (coffeeTypeDetailedList.size() != 0) {
+				if (!(coffeeTypeDetailedList.get(0).equals(mCoffeeTypeDetailed))) {
+					mCoffeeTypeDetailed.save();
+				}
+			} else {
+				mCoffeeTypeDetailed.save();
+			}
+
+			mImageLoadingProgressBar.setVisibility(View.GONE);
+
 			updateTextViewContent(coffeeTypeDetailed);
+
+			if (mErrorPromptView != null && mErrorPromptView.getParent() == mImageLoadLayout) {
+				mImageLoadLayout.removeView(mErrorPromptView);
+			}
 
 			if (mImageUrl == null || mImageUrl.isEmpty()) {
 				mShareActionView.setEnabled(true);
 			}
-
-
 		}
 	}
 
@@ -230,6 +271,14 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		public void onRequestFailure(SpiceException spiceException) {
 			Log.i("GetImageFromUrlRequestListener", "GET IMAGE FROM URL REQUEST FAILED");
 			Log.i("GetImageFromUrlRequestListener", "MESSAGE -> " + spiceException.getLocalizedMessage());
+
+			mImageLoadingProgressBar = (ProgressBar) findViewById(R.id.coffee_detailed_item_image_loading_progress_bar);
+			mImageLoadingProgressBar.setVisibility(View.GONE);
+
+			if (mErrorPromptView != null && mErrorPromptView.getParent() == null) {
+				((TextView) mErrorPromptView.findViewById(R.id.error_occured_prompt_text)).setText(spiceException.getLocalizedMessage());
+				mImageLoadLayout.addView(mErrorPromptView, 0);
+			}
 		}
 
 		@Override
@@ -238,6 +287,12 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 			mPictureBitmap = bitmap;
 			mShareActionView.setEnabled(true);
 			updateImageViewContents(bitmap);
+
+			mImageLoadingProgressBar.setVisibility(View.GONE);
+
+			if (mErrorPromptView != null && mErrorPromptView.getParent() == mImageLoadLayout) {
+				mImageLoadLayout.removeView(mErrorPromptView);
+			}
 
 		}
 	}

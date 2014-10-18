@@ -15,7 +15,8 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Created by AlexanderEmmanuel on 2014-10-16.
+ *
+ *
  */
 public class CoffeeTypeListSpiceAdapter extends OkHttpSpiceArrayAdapter<CoffeeType> {
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:layout_margin="@dimen/coffee_standard_buffer_padding"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/coffee_standard_buffer_padding">
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_an_error_occured"/>
+
+    <TextView
+        android:id="@+id/error_occured_prompt_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:paddingTop="@dimen/coffee_standard_buffer_padding"
+        android:text="@string/an_error_occured_prompt"
+        android:textColor="@color/coffee_title_text_grey"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+</LinearLayout>

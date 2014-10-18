@@ -12,5 +12,6 @@
     <string name="percolate_coffee_api_key">WuVbkuUsCXHPx3hsQzus4SE</string>
     <string name="title_activity_coffee_type_detailed_view_acitivity">CoffeeTypeDetailedViewAcitivity</string>
     <string name="action_share">Share</string>
+    <string name="an_error_occured_prompt">Sorry, An Error Has Occured</string>
 
 </resources>

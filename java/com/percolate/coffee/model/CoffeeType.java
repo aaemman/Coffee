@@ -71,4 +71,29 @@ public class CoffeeType extends SugarRecord<CoffeeType> implements Serializable 
 				", mName='" + mName + '\'' +
 				'}';
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CoffeeType)) return false;
+
+		CoffeeType that = (CoffeeType) o;
+
+		if (!mCoffeeTypeId.equals(that.mCoffeeTypeId)) return false;
+		if (!mDescription.equals(that.mDescription)) return false;
+		if (mImageUrl != null ? !mImageUrl.equals(that.mImageUrl) : that.mImageUrl != null)
+			return false;
+		if (!mName.equals(that.mName)) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = mDescription.hashCode();
+		result = 31 * result + (mImageUrl != null ? mImageUrl.hashCode() : 0);
+		result = 31 * result + mCoffeeTypeId.hashCode();
+		result = 31 * result + mName.hashCode();
+		return result;
+	}
 }

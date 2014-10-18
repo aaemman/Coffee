@@ -4,25 +4,31 @@
                 android:layout_height="match_parent"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context=".coffeeListActivity">
 
     <RelativeLayout
-        android:id="@+id/coffee_types_list_linear_layout"
+        android:id="@+id/coffee_types_list_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/coffee_types_list_progress_bar"
+        <RelativeLayout
+            android:id="@+id/coffee_types_list_inner_progress_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true">
+
+            <ProgressBar
+                android:id="@+id/coffee_types_list_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
 
         <ListView
             android:id="@+id/coffee_types_list_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/coffee_types_list_progress_bar"
+            android:layout_below="@id/coffee_types_list_inner_progress_layout"
             android:layout_marginLeft="@dimen/activity_vertical_margin"
             android:fadingEdge="horizontal"
             android:scrollbars="none"/>

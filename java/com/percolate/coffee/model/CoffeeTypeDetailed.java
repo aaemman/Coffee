@@ -41,4 +41,24 @@ public class CoffeeTypeDetailed extends CoffeeType {
 		}
 		mUpdatedAt = "Updated " + DateUtils.getTimeAgo(date.getTime());
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CoffeeTypeDetailed)) return false;
+		if (!super.equals(o)) return false;
+
+		CoffeeTypeDetailed that = (CoffeeTypeDetailed) o;
+
+		if (!mUpdatedAt.equals(that.mUpdatedAt)) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + mUpdatedAt.hashCode();
+		return result;
+	}
 }
