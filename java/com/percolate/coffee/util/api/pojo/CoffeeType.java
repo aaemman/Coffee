@@ -1,11 +1,16 @@
 package com.percolate.coffee.util.api.pojo;
 
+import android.graphics.Bitmap;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CoffeeType {
+public class CoffeeType  implements Serializable{
 	private String mDescription;
 	private String mImageUrl;
 	private String mId;
@@ -16,7 +21,7 @@ public class CoffeeType {
 	 * - This constructor is necessary (even if blank) in order for Jackson JSON Parsing to work properly.
 	 */
 	@JsonCreator
-	public CoffeeType() {	}
+	public CoffeeType() { }
 
 	@JsonProperty("desc")
 	public String getDescription() {

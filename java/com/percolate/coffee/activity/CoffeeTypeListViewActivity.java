@@ -1,12 +1,16 @@
 package com.percolate.coffee.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.NinePatchDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -40,8 +44,6 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		//		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_coffee_list);
 
 		initActionBar();
@@ -54,15 +56,8 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				CoffeeType clickedCoffeeType = (CoffeeType) adapterView.getItemAtPosition(i);
-				String id = clickedCoffeeType.getId();
-				String imageUrl = clickedCoffeeType.getImageUrl();
-
 				Intent showCoffeeTypeDetailedViewIntent = new Intent(CoffeeTypeListViewActivity.this, CoffeeTypeDetailedViewAcitivity.class);
-				showCoffeeTypeDetailedViewIntent.putExtra("id", id);
-
-				if (imageUrl != null) {
-					showCoffeeTypeDetailedViewIntent.putExtra("image_url", imageUrl);
-				}
+				showCoffeeTypeDetailedViewIntent.putExtra("coffeeType", clickedCoffeeType);
 
 				startActivity(showCoffeeTypeDetailedViewIntent);
 
@@ -97,8 +92,12 @@ public class CoffeeTypeListViewActivity extends JacksonSpringAndroidSpicedActivi
 
 
 	private void updateListViewContent(CoffeeTypeList coffeeTypes) {
-		CoffeeTypeListSpiceAdapter coffeeTypeListSpiceAdapter = new CoffeeTypeListSpiceAdapter(this, spiceManagerBinary, coffeeTypes);
-		coffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
+		if (coffeeTypesListView.getAdapter() != null) {
+			coffeeTypesListView.deferNotifyDataSetChanged();
+		} else {
+			CoffeeTypeListSpiceAdapter coffeeTypeListSpiceAdapter = new CoffeeTypeListSpiceAdapter(this, spiceManagerBinary, coffeeTypes);
+			coffeeTypesListView.setAdapter(coffeeTypeListSpiceAdapter);
+		}
 	}
 
 	private void performIndexRequest() {

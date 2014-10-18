@@ -40,8 +40,6 @@ public class DateUtils {
 
 		long now = new Date().getTime();
 
-		Log.i("ALEX : NOW ---->", String.valueOf(now));
-
 		if (time > now || time <= 0) {
 			return "This Is From The Future!";
 		}

@@ -2,6 +2,7 @@ package com.percolate.coffee.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,20 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.ShareActionProvider;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.simple.BitmapRequest;
 import com.percolate.coffee.R;
 import com.percolate.coffee.util.animation.FadeInAnimationFactory;
+import com.percolate.coffee.util.api.pojo.CoffeeType;
 import com.percolate.coffee.util.api.pojo.CoffeeTypeDetailed;
 import com.percolate.coffee.util.api.request.CoffeeTypeShowRequest;
+import com.percolate.coffee.util.view.ImageUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -33,21 +36,24 @@ import roboguice.util.temp.Ln;
 public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedActivity {
 
 
-	private LinearLayout   mDetailedViewLayout;
-	private TextView       mNameTextView;
-	private TextView       mDescriptionTextView;
-	private ImageView      mPictureImageView;
-	private TextView       mUpdatedAtTextView;
-	private ActionBar      mActionBar;
-	private LayoutInflater mInflater;
-	private View           mCustomActionBarView;
-
+	private LinearLayout       mDetailedViewLayout;
+	private TextView           mNameTextView;
+	private TextView           mDescriptionTextView;
+	private ImageView          mPictureImageView;
+	private TextView           mUpdatedAtTextView;
+	private ProgressBar        mImageLoadingProgressBar;
+	private ActionBar          mActionBar;
+	private LayoutInflater     mInflater;
+	private View               mCustomActionBarView;
+	private CoffeeType         mCoffeeType;
 	private CoffeeTypeDetailed mCoffeeTypeDetailed;
 	private String             mId;
 	private String             mImageUrl;
 	private String             mLastRequestCacheKey;
+	private MenuItem           mShareActionItem;
 
-	private ShareActionProvider mShareActionProvider;
+	private Bitmap mPictureBitmap;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +64,20 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 
 		Intent intent = getIntent();
 
-		mId = intent.getStringExtra("id");
+		mCoffeeType = (CoffeeType) intent.getSerializableExtra("coffeeType");
+		mId = mCoffeeType.getId();
 		if (mId == null) {
 			throw new NullPointerException(
-					"COFFEETYPE NAME WAS NULL; MAKE SURE THAT YOU ARE ADDING THE " +
-							"COFFEETYPES NAME AS AN INTENT EXTRA UNDER NAME \'id\'");
+					"COFFEETYPE ID WAS NULL; MAKE SURE THAT YOU ARE ADDING A " +
+							"COFFEETYPE AS AN INTENT EXTRA UNDER NAME \'coffeeType\'");
 		}
 
-		mImageUrl = intent.getStringExtra("image_url");
+		mImageUrl = mCoffeeType.getImageUrl();
+
+		if (mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://"))) {
+			mImageLoadingProgressBar = (ProgressBar) findViewById(R.id.coffee_detailed_item_image_loading_progress_bar);
+			mImageLoadingProgressBar.setVisibility(View.GONE);
+		}
 
 		mDetailedViewLayout = (LinearLayout) findViewById(R.id.coffee_type_detailed_view_layout);
 		mNameTextView = (TextView) findViewById(R.id.coffee_detailed_item_name_text_view);
@@ -80,6 +92,49 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		performShowRequest();
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		getSupportMenuInflater().inflate(R.menu.coffee_type_detailed_view_acitivity, menu);
+
+		mShareActionItem = menu.findItem(R.id.action_share);
+		mShareActionItem.setEnabled(false);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	private Intent getDefaultShareIntent() {
+
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("image/*");
+		intent.putExtra(Intent.EXTRA_SUBJECT, mCoffeeTypeDetailed.getName());
+		intent.putExtra(Intent.EXTRA_TEXT, mCoffeeTypeDetailed.getDescription());
+
+		if (!(mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://")))) {
+			Uri uri = ImageUtils.getImageUri(getBaseContext(), mPictureBitmap, "coffeeLatestSharedImage.jpg");
+			intent.putExtra(Intent.EXTRA_STREAM, uri);
+		}
+
+		return intent;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_share:
+
+				startActivity(Intent.createChooser(
+						getDefaultShareIntent(),
+						"Select an application to share with..."));
+				break;
+			case android.R.id.home:
+				finish();
+				break;
+
+			default:
+				break;
+		}
+		return true;
+	}
 
 	private void initActionBar() {
 		mActionBar = getSupportActionBar();
@@ -87,7 +142,12 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		mActionBar.setDisplayShowTitleEnabled(false);
 		mInflater = LayoutInflater.from(this);
 		mCustomActionBarView = mInflater.inflate(R.layout.percolate_action_bar, null);
-		ActionBar.LayoutParams lp = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+
+		ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+				ActionBar.LayoutParams.WRAP_CONTENT,
+				ActionBar.LayoutParams.WRAP_CONTENT,
+				Gravity.CENTER);
+
 		mActionBar.setCustomView(mCustomActionBarView, lp);
 		mActionBar.setDisplayShowCustomEnabled(true);
 	}
@@ -115,7 +175,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		mLastRequestCacheKey = request.getCacheKey(getResources());
 		spiceManager.execute(request, mLastRequestCacheKey, DurationInMillis.ONE_MINUTE, new CoffeeTypeShowRequestListener());
 
-		if (mImageUrl != null) {
+		if (!(mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://")))) {
 
 			File cacheFile = null;
 			String filename;
@@ -149,6 +209,10 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 			mCoffeeTypeDetailed = coffeeTypeDetailed;
 			updateTextViewContent(coffeeTypeDetailed);
 
+			if (mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://"))) {
+				mShareActionItem.setEnabled(true);
+			}
+
 
 		}
 	}
@@ -163,6 +227,8 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		@Override
 		public void onRequestSuccess(Bitmap bitmap) {
 			Log.i("GetImageFromUrlRequestListener", "GET IMAGE FROM URL REQUEST SUCCESS!");
+			mPictureBitmap = bitmap;
+			mShareActionItem.setEnabled(true);
 			updateImageViewContents(bitmap);
 
 		}
