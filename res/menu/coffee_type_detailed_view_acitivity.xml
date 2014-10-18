@@ -4,11 +4,7 @@
 
     <item
         android:id="@+id/action_share"
-
-        android:icon="@android:drawable/ic_menu_share"
         android:showAsAction="ifRoom"
         android:title="@string/action_share"/>
 
 </menu>
-
-    <!--android:actionLayout="@layout/share_action_item"-->

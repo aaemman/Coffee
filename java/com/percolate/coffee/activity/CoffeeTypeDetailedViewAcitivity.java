@@ -74,7 +74,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 
 		mImageUrl = mCoffeeType.getImageUrl();
 
-		if (mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://"))) {
+		if (mImageUrl == null || mImageUrl.isEmpty()) {
 			mImageLoadingProgressBar = (ProgressBar) findViewById(R.id.coffee_detailed_item_image_loading_progress_bar);
 			mImageLoadingProgressBar.setVisibility(View.GONE);
 		}
@@ -96,8 +96,19 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		getSupportMenuInflater().inflate(R.menu.coffee_type_detailed_view_acitivity, menu);
-
+		View actionView = getLayoutInflater().inflate(R.layout.share_action_item, null);
 		mShareActionItem = menu.findItem(R.id.action_share);
+		mShareActionItem.setActionView(actionView);
+
+		mShareActionItem.getActionView().findViewById(R.id.share_action_view).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				startActivity(Intent.createChooser(
+						getDefaultShareIntent(),
+						"Select an application to share with..."));
+			}
+		});
+
 		mShareActionItem.setEnabled(false);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -109,7 +120,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		intent.putExtra(Intent.EXTRA_SUBJECT, mCoffeeTypeDetailed.getName());
 		intent.putExtra(Intent.EXTRA_TEXT, mCoffeeTypeDetailed.getDescription());
 
-		if (!(mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://")))) {
+		if (!(mImageUrl == null || mImageUrl.isEmpty())) {
 			Uri uri = ImageUtils.getImageUri(getBaseContext(), mPictureBitmap, "coffeeLatestSharedImage.jpg");
 			intent.putExtra(Intent.EXTRA_STREAM, uri);
 		}
@@ -120,12 +131,6 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_share:
-
-				startActivity(Intent.createChooser(
-						getDefaultShareIntent(),
-						"Select an application to share with..."));
-				break;
 			case android.R.id.home:
 				finish();
 				break;
@@ -175,7 +180,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 		mLastRequestCacheKey = request.getCacheKey(getResources());
 		spiceManager.execute(request, mLastRequestCacheKey, DurationInMillis.ONE_MINUTE, new CoffeeTypeShowRequestListener());
 
-		if (!(mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://")))) {
+		if (!(mImageUrl == null || mImageUrl.isEmpty())) {
 
 			File cacheFile = null;
 			String filename;
@@ -209,7 +214,7 @@ public class CoffeeTypeDetailedViewAcitivity extends JacksonSpringAndroidSpicedA
 			mCoffeeTypeDetailed = coffeeTypeDetailed;
 			updateTextViewContent(coffeeTypeDetailed);
 
-			if (mImageUrl == null || mImageUrl.isEmpty() || (mImageUrl != null && !mImageUrl.trim().substring(0, 7).equals("http://"))) {
+			if (mImageUrl == null || mImageUrl.isEmpty()) {
 				mShareActionItem.setEnabled(true);
 			}
 

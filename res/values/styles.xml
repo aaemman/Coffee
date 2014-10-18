@@ -20,6 +20,7 @@
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
+        <item name="android:layout_margin">@dimen/coffee_standard_buffer_padding</item>
         <item name="android:background">@drawable/percolate_action_bar_button_background</item>
     </style>
 
