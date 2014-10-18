@@ -32,6 +32,10 @@ Design and Technical Decisions:
    * 
       * Gives a better user experience 
       * Matches with the fade in animation done on the pictures in the list view page (done by default by the spiceList module of RoboSpice).
+      
+
+   * I decided to add in basic messages in the application to notify teh user when there was a problem fulfilling any requests (ex. no network connection). I chose to do this because:
+      * It is a better user experience, without them users could mistakenly think/feel that it is the application is broken if they were to get stuck waiting for a network connection, or if something else were to go wrong.
 
 
 Known Bugs:
